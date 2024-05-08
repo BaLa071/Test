@@ -1,0 +1,197 @@
+syntax = "proto3";
+package netxd.sidecar.archival;
+option go_package = ".";
+
+import "google/protobuf/timestamp.proto";
+import "tagger/tagger.proto";
+import "buf/validate/validate.proto";
+
+
+service ArchivalService{
+    rpc AddApplication(AddApplicationRequest) returns (Response);
+    rpc UpdateApplication(UpdateApplicationRequest) returns (UpdateApplicationResponse);
+    rpc ListApplication(ListApplicationRequest) returns (ListApplicationResponse);
+    rpc GetApplication(GetApplicationRequest) returns (GetApplicationResponse);
+    rpc AddArchivalRule(AddArchivalRuleRequest) returns  (Response);
+    rpc UpdateArchivalRule(UpdateArchivalRuleRequest) returns (UpdateArchivalRuleResponse);
+    rpc ListArchivalRule(ListArchivalRuleRequest) returns (ListArchivalRuleResponse);
+    rpc GetArchivalRule(GetArchivalRuleRequest) returns (GetArchivalRuleResponse);
+    rpc ListArchivalHistory(ListArchivalHistoryRequest) returns (ListArchivalHistoryResponse);
+    rpc ListDatabase(ListDatabaseRequest) returns (ListDatabaseResponse);
+    rpc ListCollections(ListCollectionsRequest) returns (ListCollectionsResponse);
+    rpc AddBackUpServer(AddBackUpServerRequest) returns (Response);
+    rpc ListServerNames(ListServerNameRequest) returns (ListServerNameResponse);
+    rpc ListBackupServers(ListBackupServerRequest) returns (ListBackupServerResponse);
+}
+
+message Application{
+    string ApplicationName =1;
+    repeated string Databases =2;
+    string ApplicationId=3;
+}
+
+message ArchivalRule{
+    string Name =1;
+    string ApplicationName =2;
+    string DatabaseName =3;
+    string CollectionName =4;
+    int64 Frequency =5;
+    string BackUpServer=6;
+    int64 RetentionPeriod =7;
+    string Conditions =8;
+    string Status =9;
+    string ArchivalId =10;
+    google.protobuf.Timestamp CreatedDate =11; 
+    google.protobuf.Timestamp LastArchived =12; 
+    int64 LastArchivedRecordCount =13; 
+    int64 TotalArchivedRecordCount =14;
+    google.protobuf.Timestamp UpdatedDate =15; 
+    string CreatedBy =16; 
+    string UpdatedBy =17; 
+}
+
+message ArchivalHistory{
+    string ArchivalRule =1;
+    string ApplicationName =2;
+    google.protobuf.Timestamp ArchivalStartDate =3;
+    google.protobuf.Timestamp ArchivalEndDate =4;
+    string CollectionName =5;
+    string DatabaseName =6;
+    int64 NoOfRecords =7;
+    int64 SizeOfArchive =8;
+    string FileName =9;
+    string BackUpServer =10;
+    string ArchivalId =11;
+
+}
+
+message AddApplicationRequest{
+    string ApplicationName =1[(buf.validate.field).required = true,json_name = "applicationName",(tagger.tags) = "json:\"applicationName,omitempty\" bson:\"applicationName,omitempty\""];
+    repeated string Databases =2[json_name = "databases",(tagger.tags) = "json:\"databases,omitempty\" bson:\"databases,omitempty\""];
+}
+
+message UpdateApplicationResponse{
+    Application Application = 1;
+}
+
+message Response{
+    string Message =1;
+}
+
+message UpdateApplicationRequest {
+    string ApplicationId=1[(buf.validate.field).required = true,json_name = "applicationId",(tagger.tags) = "json:\"applicationId,omitempty\" bson:\"applicationId,omitempty\""];
+    string ApplicationName = 2 ;
+    repeated string Databases = 3 ;
+}
+
+message ListApplicationRequest{
+}
+
+message ListApplicationResponse{
+    repeated Application Application =1;
+}
+
+message AddArchivalRuleRequest{
+    string Name =1 [json_name = "name",(tagger.tags) = "json:\"name,omitempty\" bson:\"name,omitempty\""];
+    string ApplicationName =2 [(buf.validate.field).required = true,json_name = "applicationName",(tagger.tags) = "json:\"applicationName,omitempty\" bson:\"applicationName,omitempty\""];
+    string DatabaseName =3[(buf.validate.field).required = true,json_name = "databaseName",(tagger.tags) = "json:\"databaseName,omitempty\" bson:\"databaseName,omitempty\""];
+    string CollectionName =4 [(buf.validate.field).required = true,json_name = "collectionName",(tagger.tags) = "json:\"collectionName,omitempty\" bson:\"collectionName,omitempty\""];
+    int64 Frequency =5[json_name = "frequency",(tagger.tags) = "json:\"frequency,omitempty\" bson:\"frequency,omitempty\""];
+    int64 RetentionPeriod =6[json_name = "retentionPeriod",(tagger.tags) = "json:\"retentionPeriod,omitempty\" bson:\"retentionPeriod,omitempty\""];
+    string Conditions =7[json_name = "conditions",(tagger.tags) = "json:\"conditions,omitempty\" bson:\"conditions,omitempty\""];
+    string BackUpServer=8[(buf.validate.field).required = true,json_name = "backUpServer",(tagger.tags) = "json:\"backUpServer,omitempty\" bson:\"backUpServer,omitempty\""];
+}
+
+message UpdateArchivalRuleRequest {
+    string Name =1 [json_name = "name",(tagger.tags) = "json:\"name,omitempty\" bson:\"name,omitempty\""];
+    string ApplicationName =2 [json_name = "applicationName",(tagger.tags) = "json:\"applicationName,omitempty\" bson:\"applicationName,omitempty\""];
+    string DatabaseName =3[json_name = "databaseName",(tagger.tags) = "json:\"databaseName,omitempty\" bson:\"databaseName,omitempty\""];
+    string CollectionName =4 [json_name = "collectionName",(tagger.tags) = "json:\"collectionName,omitempty\" bson:\"collectionName,omitempty\""];
+    int64 Frequency =5[json_name = "frequency",(tagger.tags) = "json:\"frequency,omitempty\" bson:\"frequency,omitempty\""];
+    int64 RetentionPeriod =6[json_name = "retentionPeriod",(tagger.tags) = "json:\"retentionPeriod,omitempty\" bson:\"retentionPeriod,omitempty\""];
+    string Conditions =7[json_name = "conditions",(tagger.tags) = "json:\"conditions,omitempty\" bson:\"conditions,omitempty\""];
+    string BackUpServer=8[json_name = "backUpServer",(tagger.tags) = "json:\"backUpServer,omitempty\" bson:\"backUpServer,omitempty\""];
+    string ArchivalId =9[(buf.validate.field).required = true,json_name = "archivalId",(tagger.tags) = "json:\"archivalId,omitempty\" bson:\"archivalId,omitempty\""];
+}
+message UpdateArchivalRuleResponse{
+    ArchivalRule ArchivalRule = 1;
+}
+message ListArchivalRuleRequest{
+}
+
+message ListArchivalRuleResponse{
+    repeated ArchivalRule ArchivalRules =1;
+}
+
+message ListArchivalHistoryRequest{
+    string Id =1;
+}
+
+message ListArchivalHistoryResponse{
+    repeated ArchivalHistory ArchivalHistory =1;
+}
+
+message ListDatabaseRequest{
+    string ApplicationName =1;
+}
+
+message ListDatabaseResponse{
+    repeated string Databases =1;
+}
+
+message ListCollectionsRequest{
+    string DatabaseName =1[(buf.validate.field).required = true,json_name = "databaseName",(tagger.tags) = "json:\"databaseName,omitempty\" bson:\"databaseName,omitempty\""];
+}
+
+message ListCollectionsResponse{
+    repeated string Collections =1;
+}
+
+message AddBackUpServerRequest{
+    string ServerName =1[(buf.validate.field).required = true,json_name = "serverName",(tagger.tags) = "json:\"serverName,omitempty\" bson:\"serverName,omitempty\""];
+    ServerType Type =2[json_name = "type",(tagger.tags) = "json:\"type,omitempty\" bson:\"type,omitempty\""];
+}
+enum ServerType{
+    S3 =0;
+    SFTP =1;
+}
+
+message GetApplicationRequest {
+    string ApplicationId=1[(buf.validate.field).required = true,json_name = "applicationId",(tagger.tags) = "json:\"applicationId,omitempty\" bson:\"applicationId,omitempty\""];
+}
+
+message GetApplicationResponse{
+    Application Application =1;
+}
+
+message GetArchivalRuleRequest {
+    string ArchivalId=1[(buf.validate.field).required = true,json_name = "archivalId",(tagger.tags) = "json:\"archivalId,omitempty\" bson:\"archivalId,omitempty\""];
+}
+
+message GetArchivalRuleResponse {
+    ArchivalRule ArchivalRule =1;
+}
+
+message ListServerNameRequest{
+}
+
+message ListServerNameResponse{
+    repeated string Keys=1;
+}
+
+message ListBackupServerRequest{
+}
+
+message ListBackupServerResponse{
+    repeated BackUpServer BackUpServer =1;
+}
+
+message BackUpServer {
+    string ServerName =1;
+    ServerType Type =2;
+    string BackupServerId=3;
+    google.protobuf.Timestamp CreatedDate =4; 
+    google.protobuf.Timestamp UpdatedDate =5; 
+    string CreatedBy =6; 
+    string UpdatedBy =7; 
+}
